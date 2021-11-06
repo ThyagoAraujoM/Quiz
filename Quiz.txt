@@ -1,0 +1,11 @@
+Regras da Aplicação
+
+Fluxo Normal da aplicação
+Dado que acesso a página
+Quando digito o número de perguntas que desejo responder
+Então sou redirecionado para uma página com a quantidade de perguntas que pedi
+Quando respondo todas as perguntas e clico para enviar
+Então sou redirecionado para página de resultado e vejo o resultado das perguntas
+E posso voltar para página inicial para pedir novas perguntas.
+Mas se pedir novamente novas perguntas, aparecerá um ícone com os testes anteriores feitos para verificar os resultados
+E quando clico em um dos resultados, é renderizado os resultados abaixo do input da quantidade de perguntas
