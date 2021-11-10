@@ -1,18 +1,19 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
+import { QuestionsContextProvider } from "./context/QuestionsContext";
 import Home from "./pages/Home";
 import Perguntas from "./pages/Perguntas";
+import Resultado from "./pages/Resultado";
 
 function App() {
   return (
-    <QuestionsContextProvider>
-      <BrowserRouter>
-        <Route path='/' exact>
-          <Home />
-        </Route>
-        <Route path='/perguntas' component={Perguntas} />
-      </BrowserRouter>
-    </QuestionsContextProvider>
+    <BrowserRouter>
+      <QuestionsContextProvider>
+        <Route path='/' component={Home} exact />
+        <Route path='/perguntas/:quantity' component={Perguntas} />
+        <Route path='/resultado' component={Resultado} />
+      </QuestionsContextProvider>
+    </BrowserRouter>
   );
 }
 

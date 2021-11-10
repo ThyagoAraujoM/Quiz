@@ -1,51 +1,102 @@
 import { Button, Container } from "@material-ui/core";
-import { Box } from "@material-ui/system";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Redirect, useParams } from "react-router-dom";
+import { useQuestions } from "../../hooks/useQuestions";
 import { HeaderStyled } from "../Home/styles";
 import { QuestionBox } from "./styles";
 
+type Question = {
+  incorrect_answers: [""];
+  correct_answer: string;
+  difficulty: string;
+  question: string;
+  category: string;
+};
+type UserQuestionAndAnswers = {
+  question: string;
+  answer: string;
+};
+
+type ParamsType = {
+  quantity: string;
+};
+
 export default function Perguntas() {
-  const axios = require("axios");
-  const [questions, setQuestions]: any = useState([]);
-  async function getQuestions() {
-    const newQuestions = await axios.get(
-      "https://opentdb.com/api.php?amount=5"
-    );
-    setQuestions(newQuestions.data.results);
-  }
+  const {
+    questions,
+    correctQuestionAndAnswer,
+    setUserQuestionAndAnswer,
+    getQuestions,
+  } = useQuestions();
+  const userQuestionAndAnswers: UserQuestionAndAnswers[] = [];
+  const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState(false);
+  let params = useParams<ParamsType>();
+
   useEffect(() => {
-    getQuestions();
+    getQuestions(params.quantity);
+    transformQuestions();
   }, []);
 
-  type Question = {
-    incorrect_answers: [""];
-    correct_answer: string;
-    difficulty: string;
-    question: string;
-    category: string;
-  };
-
-  function createMultipleQuestions(question: Question) {
+  function createMultipleQuestions(prop: Question, index: number) {
     const answer = [];
-    answer.push(<div key={"correct"}>{question.correct_answer}</div>);
+
     answer.push(
-      question.incorrect_answers.map((prop, index) => {
-        return <div key={index}>{prop}</div>;
+      <div
+        key={"correct"}
+        onClick={() => {
+          userQuestionAndAnswers[index] = {
+            question: prop.question,
+            answer: prop.correct_answer,
+          };
+        }}>
+        {prop.correct_answer}
+      </div>
+    );
+    answer.push(
+      prop.incorrect_answers.map((value, key) => {
+        return (
+          <div
+            key={key}
+            onClick={() => {
+              userQuestionAndAnswers[index] = {
+                question: prop.question,
+                answer: value,
+              };
+            }}>
+            {value}
+          </div>
+        );
       })
     );
 
     return answer;
   }
 
-  function createBooleanQuestions(question: Question) {
+  function createBooleanQuestions(prop: Question, index: number) {
     return (
       <div>
         <div>
-          <p>True</p>
+          <p
+            onClick={() => {
+              userQuestionAndAnswers[index] = {
+                question: prop.question,
+                answer: "True",
+              };
+            }}>
+            True
+          </p>
         </div>
         <div>
-          <p>False</p>
+          <p
+            onClick={() => {
+              userQuestionAndAnswers[index] = {
+                question: prop.question,
+                answer: "False",
+              };
+            }}>
+            False
+          </p>
         </div>
       </div>
     );
@@ -54,30 +105,27 @@ export default function Perguntas() {
   function transformQuestions(): any {
     const x = [];
     x.push(
-      questions.map((prop: any, index: number) => {
+      questions.map((value: any, index: number) => {
         return (
-          <>
-            <QuestionBox key={index}>
-              <div className='c-question-header'>
-                <p>Category: {prop.category}</p>
-                <p>Difficulty: {prop.difficulty}</p>
-              </div>
+          <QuestionBox key={index}>
+            <div className='c-question-header'>
+              <p>Category: {value.category}</p>
+              <p>Difficulty: {value.difficulty}</p>
+            </div>
 
-              <p>
-                Question: <br /> {prop.question}
-              </p>
+            <p>
+              Question: <br /> {value.question}
+            </p>
 
-              <div className='c-answer-box'>
-                <h4>Answers</h4>
-                <div>
-                  {prop.type === "boolean"
-                    ? createBooleanQuestions(prop)
-                    : createMultipleQuestions(prop)}
-                </div>
+            <div className='c-answer-box'>
+              <h4>Answers</h4>
+              <div>
+                {value.type === "boolean"
+                  ? createBooleanQuestions(value, index)
+                  : createMultipleQuestions(value, index)}
               </div>
-            </QuestionBox>
-            <hr />
-          </>
+            </div>
+          </QuestionBox>
         );
       })
     );
@@ -94,8 +142,24 @@ export default function Perguntas() {
         <h1>Perguntas</h1>
       </HeaderStyled>
       <Container sx={{ background: "#f9f9f9", border: "1px solid #000" }}>
-        {transformQuestions()}
+        {questions ? transformQuestions() : null}
+        <Button
+          onClick={() => {
+            if (
+              correctQuestionAndAnswer.length === userQuestionAndAnswers.length
+            ) {
+              setUserQuestionAndAnswer(userQuestionAndAnswers);
+              setRedirect(true);
+              setError(false);
+            } else {
+              setError(true);
+            }
+          }}>
+          Finalizar
+        </Button>
+        {error ? <div>Preencha todos os dados</div> : null}
       </Container>
+      {redirect ? <Redirect push to='/resultado' /> : null}
     </div>
   );
 }

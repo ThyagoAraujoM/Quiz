@@ -1,5 +1,10 @@
-import React, { createContext, ReactNode, useEffect, useState } from "react";
-import { questions } from "../pages/Perguntas/styles";
+import React, {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
 
 type Questions = {
   category: string;
@@ -18,10 +23,13 @@ type UserQuestionAndAnswer = {
   question: string;
   answer: string;
 };
+
 type QuestionsContextType = {
   questions: Questions[];
   correctQuestionAndAnswer: CorrectQuestionAndAnswer[];
-  userQuestionAndAnswer: UserQuestionAndAnswer[] | undefined;
+  userQuestionAndAnswer: UserQuestionAndAnswer[];
+  setUserQuestionAndAnswer: Dispatch<SetStateAction<UserQuestionAndAnswer[]>>;
+  getQuestions: (quantity: string) => void;
 };
 type QuestionsContextProviderProps = {
   children: ReactNode;
@@ -35,34 +43,37 @@ export function QuestionsContextProvider(props: QuestionsContextProviderProps) {
   const [correctQuestionAndAnswer, setCorrectQuestionAndAnswer] = useState<
     CorrectQuestionAndAnswer[]
   >([]);
-  const [userQuestionAndAnswer, setuserQuestionAndAnswer] = useState<
+  const [userQuestionAndAnswer, setUserQuestionAndAnswer] = useState<
     UserQuestionAndAnswer[]
   >([]);
 
-  async function getQuestions() {
+  async function getQuestions(quantity: string) {
     const newQuestions = await axios.get(
-      "https://opentdb.com/api.php?amount=5"
+      `https://opentdb.com/api.php?amount=${quantity}`
     );
+
+    let correctQuestionAndAnswerValue = [];
+
     for (let prop in newQuestions.data.results) {
       let questionAndAnswer = {
         question: newQuestions.data.results[prop].question,
         answer: newQuestions.data.results[prop].correct_answer,
       };
-      setCorrectQuestionAndAnswer([
-        ...correctQuestionAndAnswer,
-        questionAndAnswer,
-      ]);
+      correctQuestionAndAnswerValue.push(questionAndAnswer);
     }
+    setCorrectQuestionAndAnswer(correctQuestionAndAnswerValue);
     setQuestions(newQuestions.data.results);
   }
 
-  useEffect(() => {
-    getQuestions();
-  }, []);
-
   return (
     <QuestionsContext.Provider
-      value={{ questions, userQuestionAndAnswer, correctQuestionAndAnswer }}>
+      value={{
+        questions,
+        userQuestionAndAnswer,
+        setUserQuestionAndAnswer,
+        correctQuestionAndAnswer,
+        getQuestions,
+      }}>
       {props.children}
     </QuestionsContext.Provider>
   );

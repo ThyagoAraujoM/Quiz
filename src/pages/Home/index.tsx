@@ -1,6 +1,6 @@
 import { Button, MenuItem, Modal } from "@material-ui/core";
 import { Field, Form, Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import {
@@ -13,8 +13,9 @@ import {
 
 export default function Home() {
   const [open, setOpen] = React.useState(false);
-
-  const handleOpen = () => {
+  const [quantityOfQuestions, setQuantityOfQuestions] = useState("");
+  const handleOpen = (value: any) => {
+    setQuantityOfQuestions(`${value.perguntas}`);
     setOpen(true);
   };
   const handleClose = () => {
@@ -78,7 +79,7 @@ export default function Home() {
           <div className='c-buttons-modal'>
             <Button onClick={handleClose}>Close</Button>
             <Button>
-              <Link to={`/perguntas?`}>Start</Link>
+              <Link to={`/perguntas/${quantityOfQuestions}`}>Start</Link>
             </Button>
           </div>
         </BoxStyle>
