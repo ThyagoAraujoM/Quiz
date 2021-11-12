@@ -1,10 +1,11 @@
 import { Button, Container } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuestions } from "../../hooks/useQuestions";
 import { HeaderStyled } from "../Home/styles";
 import {
   AnswersGrid,
+  ButtonContainer,
   CorrectAnswer,
   QuestionContainer,
   ScoreContainer,
@@ -13,13 +14,29 @@ import {
 
 export default function Resultado() {
   const [show, setShow] = useState(false);
-  const { correctQuestionAndAnswer, userQuestionAndAnswer } = useQuestions();
-
+  const {
+    correctQuestionAndAnswer,
+    userQuestionAndAnswer,
+    setUserQuestionAndAnswer,
+  } = useQuestions();
   const result: JSX.Element[] = [];
 
-  if (userQuestionAndAnswer.length == 0) {
-    console.log("nada");
-  }
+  useEffect(() => {
+    let currentQuiz: any = localStorage.getItem("currentQuiz");
+    if (userQuestionAndAnswer.length === 0) {
+      let data = [];
+      let currentQuizData = JSON.parse(currentQuiz);
+      console.log(currentQuizData);
+      for (let value in currentQuizData) {
+        data.push({
+          question: currentQuizData[value].question,
+          answer: currentQuizData[value].user_answer,
+        });
+      }
+      setUserQuestionAndAnswer(data);
+    }
+  }, []);
+  console.log(userQuestionAndAnswer);
   function renderCorrectAndWorkQuestions() {
     let corrects = 0;
     let wrongs = 0;
@@ -56,7 +73,7 @@ export default function Resultado() {
         userQuestionAndAnswer[value].answer
       ) {
         result.push(
-          <QuestionContainer sx={{ border: "solid 3px #13ca414e" }}>
+          <QuestionContainer key={value} sx={{ border: "solid 3px #13ca414e" }}>
             <p>{correctQuestionAndAnswer[value].question}</p>
             <AnswersGrid>
               <CorrectAnswer sx={{ border: "1px solid #00000075" }}>
@@ -67,7 +84,7 @@ export default function Resultado() {
         );
       } else {
         result.push(
-          <QuestionContainer sx={{ border: "solid 3px #ca13224e" }}>
+          <QuestionContainer key={value} sx={{ border: "solid 3px #ca13224e" }}>
             <p>{correctQuestionAndAnswer[value].question}</p>
             <AnswersGrid>
               <CorrectAnswer>
@@ -84,6 +101,42 @@ export default function Resultado() {
     return result;
   }
 
+  function saveCurrentQuiz() {
+    let data = [];
+    let date = new Date();
+    let listOfDatesOfQuizzes: any = () => {
+      let arrayOfQuizzes: any = [];
+      let list: any = localStorage.getItem("listOfDatesOfQuizzes");
+      if (list != null) {
+        arrayOfQuizzes.push(JSON.parse(list));
+        return arrayOfQuizzes;
+      } else {
+        return arrayOfQuizzes;
+      }
+    };
+
+    for (let value in correctQuestionAndAnswer) {
+      data.push({
+        question: correctQuestionAndAnswer[value].question,
+        correct_answer: correctQuestionAndAnswer[value].answer,
+        user_answer: userQuestionAndAnswer[value].answer,
+      });
+    }
+    listOfDatesOfQuizzes.push(
+      `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
+    );
+    // salvado data que quiz foi feito
+    localStorage.setItem(
+      "listOfDatesOfQuizzes",
+      JSON.stringify(listOfDatesOfQuizzes)
+    );
+    // salvando quiz com data que foi feito
+    localStorage.setItem(
+      `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+      JSON.stringify(data)
+    );
+  }
+
   return (
     <Container>
       <HeaderStyled>
@@ -92,19 +145,23 @@ export default function Resultado() {
       </HeaderStyled>
       <div>
         {renderCorrectAndWorkQuestions()}
-        <Button
-          sx={{
-            margin: "0 50%",
-            transform: "translate(-50%,0%)",
-            width: "200px",
-          }}
-          variant='contained'
-          onClick={() => {
-            setShow(!show);
-          }}>
-          Mostrar Perguntas
-        </Button>
-        <div>{show ? <div>{showResult()}</div> : null}</div>
+        <ButtonContainer>
+          <Button
+            variant='contained'
+            onClick={() => {
+              setShow(!show);
+            }}>
+            Mostrar Perguntas
+          </Button>
+          <Button
+            variant='contained'
+            onClick={() => {
+              saveCurrentQuiz();
+            }}>
+            Salvar Quiz
+          </Button>
+        </ButtonContainer>
+        <div>{show ? null : <div>{showResult()}aqqqqq</div>}</div>
       </div>
     </Container>
   );

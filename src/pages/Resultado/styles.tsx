@@ -65,3 +65,10 @@ export const CorrectAnswer = styled(Answer)`
 export const WrongAnswer = styled(Answer)`
   background: #ca13224e;
 `;
+
+export const ButtonContainer = styled("div")`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 100px;
+`;

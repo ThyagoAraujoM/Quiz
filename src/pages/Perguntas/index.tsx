@@ -26,6 +26,7 @@ export default function Perguntas() {
     questions,
     correctQuestionAndAnswer,
     setUserQuestionAndAnswer,
+    userQuestionAndAnswer,
     getQuestions,
   } = useQuestions();
   const userQuestionAndAnswers: UserQuestionAndAnswers[] = [];
@@ -132,6 +133,23 @@ export default function Perguntas() {
 
     return x;
   }
+  let test: any = localStorage.getItem("currentQuiz");
+  console.log(JSON.parse(test));
+
+  function processRedirect() {
+    let data = [];
+    for (let value in correctQuestionAndAnswer) {
+      data.push({
+        question: correctQuestionAndAnswer[value].question,
+        correct_answer: correctQuestionAndAnswer[value].answer,
+        user_answer: userQuestionAndAnswers[value].answer,
+      });
+    }
+    localStorage.setItem("currentQuiz", JSON.stringify(data));
+
+    setRedirect(true);
+    setError(false);
+  }
 
   return (
     <div>
@@ -149,8 +167,7 @@ export default function Perguntas() {
               correctQuestionAndAnswer.length === userQuestionAndAnswers.length
             ) {
               setUserQuestionAndAnswer(userQuestionAndAnswers);
-              setRedirect(true);
-              setError(false);
+              processRedirect();
             } else {
               setError(true);
             }

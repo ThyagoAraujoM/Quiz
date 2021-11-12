@@ -14,6 +14,10 @@ import {
 export default function Home() {
   const [open, setOpen] = React.useState(false);
   const [quantityOfQuestions, setQuantityOfQuestions] = useState("");
+
+  let listOfDatesOfQuizzes: any = localStorage.getItem("listOfDatesOfQuizzes");
+  console.log(JSON.parse(listOfDatesOfQuizzes));
+
   const handleOpen = (value: any) => {
     setQuantityOfQuestions(`${value.perguntas}`);
     setOpen(true);
@@ -21,6 +25,21 @@ export default function Home() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  function renderListOfQuizzes() {
+    let list = [];
+    for (let value in listOfDatesOfQuizzes) {
+      list.push(
+        <MenuItem
+          onClick={() => {
+            alert("test");
+          }}
+          value=''>
+          <p>{listOfDatesOfQuizzes[value]}</p>
+        </MenuItem>
+      );
+    }
+  }
 
   const QuestionsValueSchema = Yup.object().shape({
     perguntas: Yup.number()
@@ -32,19 +51,15 @@ export default function Home() {
     <ContextContainer>
       <HeaderStyled sx={{ position: "relative" }}>
         <h1>Quiz</h1>
-        <SelectStyle
-          displayEmpty
-          renderValue={() => {
-            return <em>Quiz Finalizados: 0</em>;
-          }}>
-          <MenuItem
-            onClick={() => {
-              alert("test");
-            }}
-            value=''>
-            <em>Placeholder</em>
-          </MenuItem>
-        </SelectStyle>
+        {listOfDatesOfQuizzes ? (
+          <SelectStyle
+            displayEmpty
+            renderValue={() => {
+              return <em>Quiz Finalizados: 0</em>;
+            }}>
+            {}
+          </SelectStyle>
+        ) : null}
       </HeaderStyled>
       <Main>
         <h2>Teste seu conhecimento com perguntas de diferentes temas</h2>
