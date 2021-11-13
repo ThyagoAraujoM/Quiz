@@ -12,8 +12,7 @@ type Question = {
   question: string;
   category: string;
 };
-type UserQuestionAndAnswers = {
-  question: string;
+type UserAnswers = {
   answer: string;
 };
 
@@ -22,21 +21,14 @@ type ParamsType = {
 };
 
 export default function Perguntas() {
-  const {
-    questions,
-    correctQuestionAndAnswer,
-    setUserQuestionAndAnswer,
-    userQuestionAndAnswer,
-    getQuestions,
-  } = useQuestions();
-  const userQuestionAndAnswers: UserQuestionAndAnswers[] = [];
+  const { questions, correctQuestionAndAnswer, getQuestions } = useQuestions();
+  const userAnswers: UserAnswers[] = [];
   const [redirect, setRedirect] = useState(false);
   const [error, setError] = useState(false);
   let params = useParams<ParamsType>();
 
   useEffect(() => {
     getQuestions(params.quantity);
-    transformQuestions();
   }, []);
 
   function createMultipleQuestions(prop: Question, index: number) {
@@ -46,8 +38,7 @@ export default function Perguntas() {
       <div
         key={"correct"}
         onClick={() => {
-          userQuestionAndAnswers[index] = {
-            question: prop.question,
+          userAnswers[index] = {
             answer: prop.correct_answer,
           };
         }}>
@@ -60,8 +51,7 @@ export default function Perguntas() {
           <div
             key={key}
             onClick={() => {
-              userQuestionAndAnswers[index] = {
-                question: prop.question,
+              userAnswers[index] = {
                 answer: value,
               };
             }}>
@@ -80,8 +70,7 @@ export default function Perguntas() {
         <div>
           <p
             onClick={() => {
-              userQuestionAndAnswers[index] = {
-                question: prop.question,
+              userAnswers[index] = {
                 answer: "True",
               };
             }}>
@@ -91,8 +80,7 @@ export default function Perguntas() {
         <div>
           <p
             onClick={() => {
-              userQuestionAndAnswers[index] = {
-                question: prop.question,
+              userAnswers[index] = {
                 answer: "False",
               };
             }}>
@@ -133,8 +121,6 @@ export default function Perguntas() {
 
     return x;
   }
-  let test: any = localStorage.getItem("currentQuiz");
-  console.log(JSON.parse(test));
 
   function processRedirect() {
     let data = [];
@@ -142,7 +128,7 @@ export default function Perguntas() {
       data.push({
         question: correctQuestionAndAnswer[value].question,
         correct_answer: correctQuestionAndAnswer[value].answer,
-        user_answer: userQuestionAndAnswers[value].answer,
+        user_answer: userAnswers[value].answer,
       });
     }
     localStorage.setItem("currentQuiz", JSON.stringify(data));
@@ -163,10 +149,7 @@ export default function Perguntas() {
         {questions ? transformQuestions() : null}
         <Button
           onClick={() => {
-            if (
-              correctQuestionAndAnswer.length === userQuestionAndAnswers.length
-            ) {
-              setUserQuestionAndAnswer(userQuestionAndAnswers);
+            if (correctQuestionAndAnswer.length === userAnswers.length) {
               processRedirect();
             } else {
               setError(true);

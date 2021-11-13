@@ -1,7 +1,6 @@
 import { Button, Container } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuestions } from "../../hooks/useQuestions";
 import { HeaderStyled } from "../Home/styles";
 import {
   AnswersGrid,
@@ -14,37 +13,26 @@ import {
 
 export default function Resultado() {
   const [show, setShow] = useState(false);
-  const {
-    correctQuestionAndAnswer,
-    userQuestionAndAnswer,
-    setUserQuestionAndAnswer,
-  } = useQuestions();
+
   const result: JSX.Element[] = [];
 
-  useEffect(() => {
-    let currentQuiz: any = localStorage.getItem("currentQuiz");
-    if (userQuestionAndAnswer.length === 0) {
-      let data = [];
-      let currentQuizData = JSON.parse(currentQuiz);
-      console.log(currentQuizData);
-      for (let value in currentQuizData) {
-        data.push({
-          question: currentQuizData[value].question,
-          answer: currentQuizData[value].user_answer,
-        });
-      }
-      setUserQuestionAndAnswer(data);
-    }
-  }, []);
-  console.log(userQuestionAndAnswer);
+  type CurrentQuiz = {
+    question: string;
+    correct_answer: string;
+    user_answer: string;
+  };
+
+  let currentQuiz: CurrentQuiz[] = [];
+  let value: any = localStorage.getItem("currentQuiz");
+  currentQuiz = JSON.parse(value);
+
   function renderCorrectAndWorkQuestions() {
     let corrects = 0;
     let wrongs = 0;
 
-    for (let value in correctQuestionAndAnswer) {
+    for (let value in currentQuiz) {
       if (
-        correctQuestionAndAnswer[value].answer ===
-        userQuestionAndAnswer[value].answer
+        currentQuiz[value].correct_answer === currentQuiz[value].user_answer
       ) {
         corrects++;
       } else {
@@ -67,17 +55,16 @@ export default function Resultado() {
   }
 
   function showResult() {
-    for (let value in correctQuestionAndAnswer) {
+    for (let value in currentQuiz) {
       if (
-        correctQuestionAndAnswer[value].answer ===
-        userQuestionAndAnswer[value].answer
+        currentQuiz[value].correct_answer === currentQuiz[value].user_answer
       ) {
         result.push(
           <QuestionContainer key={value} sx={{ border: "solid 3px #13ca414e" }}>
-            <p>{correctQuestionAndAnswer[value].question}</p>
+            <p>{currentQuiz[value].question}</p>
             <AnswersGrid>
               <CorrectAnswer sx={{ border: "1px solid #00000075" }}>
-                {correctQuestionAndAnswer[value].answer}
+                {currentQuiz[value].correct_answer}
               </CorrectAnswer>
             </AnswersGrid>
           </QuestionContainer>
@@ -85,13 +72,11 @@ export default function Resultado() {
       } else {
         result.push(
           <QuestionContainer key={value} sx={{ border: "solid 3px #ca13224e" }}>
-            <p>{correctQuestionAndAnswer[value].question}</p>
+            <p>{currentQuiz[value].question}</p>
             <AnswersGrid>
-              <CorrectAnswer>
-                {correctQuestionAndAnswer[value].answer}
-              </CorrectAnswer>
+              <CorrectAnswer>{currentQuiz[value].correct_answer}</CorrectAnswer>
               <WrongAnswer sx={{ border: "1px solid #00000075" }}>
-                {userQuestionAndAnswer[value].answer}
+                {currentQuiz[value].user_answer}
               </WrongAnswer>
             </AnswersGrid>
           </QuestionContainer>
@@ -103,38 +88,40 @@ export default function Resultado() {
 
   function saveCurrentQuiz() {
     let data = [];
-    let date = new Date();
-    let listOfDatesOfQuizzes: any = () => {
-      let arrayOfQuizzes: any = [];
-      let list: any = localStorage.getItem("listOfDatesOfQuizzes");
-      if (list != null) {
-        arrayOfQuizzes.push(JSON.parse(list));
-        return arrayOfQuizzes;
-      } else {
-        return arrayOfQuizzes;
-      }
-    };
-
-    for (let value in correctQuestionAndAnswer) {
+    for (let value in currentQuiz) {
       data.push({
-        question: correctQuestionAndAnswer[value].question,
-        correct_answer: correctQuestionAndAnswer[value].answer,
-        user_answer: userQuestionAndAnswer[value].answer,
+        question: currentQuiz[value].question,
+        correct_answer: currentQuiz[value].correct_answer,
+        user_answer: currentQuiz[value].user_answer,
       });
     }
-    listOfDatesOfQuizzes.push(
-      `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
-    );
-    // salvado data que quiz foi feito
+
+    let listOfDatesOfQuizzes: [] | any =
+      localStorage.getItem("listOfDatesOfQuizzes") != null
+        ? localStorage.getItem("listOfDatesOfQuizzes")
+        : [];
+
+    if (listOfDatesOfQuizzes[0] != null) {
+      listOfDatesOfQuizzes = JSON.parse(listOfDatesOfQuizzes);
+    }
+
+    console.log(listOfDatesOfQuizzes);
+    let date = new Date();
+    let ActualDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+
+    if (
+      listOfDatesOfQuizzes.find((value: string) => value === ActualDate) ===
+      undefined
+    ) {
+      listOfDatesOfQuizzes.push(ActualDate);
+    }
+    // salvado data de quando o quiz foi feito
     localStorage.setItem(
       "listOfDatesOfQuizzes",
       JSON.stringify(listOfDatesOfQuizzes)
     );
     // salvando quiz com data que foi feito
-    localStorage.setItem(
-      `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
-      JSON.stringify(data)
-    );
+    localStorage.setItem(ActualDate, JSON.stringify(data));
   }
 
   return (
@@ -161,7 +148,7 @@ export default function Resultado() {
             Salvar Quiz
           </Button>
         </ButtonContainer>
-        <div>{show ? null : <div>{showResult()}aqqqqq</div>}</div>
+        <div>{show ? <div>{showResult()}</div> : null}</div>
       </div>
     </Container>
   );

@@ -4,6 +4,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import {
+  AnswersGrid,
+  CorrectAnswer,
+  QuestionContainer,
+  WrongAnswer,
+} from "../Resultado/styles";
+import {
   BoxStyle,
   ContextContainer,
   HeaderStyled,
@@ -14,9 +20,16 @@ import {
 export default function Home() {
   const [open, setOpen] = React.useState(false);
   const [quantityOfQuestions, setQuantityOfQuestions] = useState("");
+  const [show, setShow] = useState(false);
+  const [storageQuizSelected, setStorageQuizSelected] = useState<any[]>([]);
+  let listOfDatesOfQuizzes: [] | any =
+    localStorage.getItem("listOfDatesOfQuizzes") != null
+      ? localStorage.getItem("listOfDatesOfQuizzes")
+      : [];
 
-  let listOfDatesOfQuizzes: any = localStorage.getItem("listOfDatesOfQuizzes");
-  console.log(JSON.parse(listOfDatesOfQuizzes));
+  if (listOfDatesOfQuizzes[0] != null) {
+    listOfDatesOfQuizzes = JSON.parse(listOfDatesOfQuizzes);
+  }
 
   const handleOpen = (value: any) => {
     setQuantityOfQuestions(`${value.perguntas}`);
@@ -26,19 +39,56 @@ export default function Home() {
     setOpen(false);
   };
 
+  function showQuizSelected(quizSelected: string) {
+    let quizStorage: any = localStorage.getItem(quizSelected);
+    quizStorage = JSON.parse(quizStorage);
+    const componentQuizSelected: any[] = [];
+    for (let value in quizStorage) {
+      if (
+        quizStorage[value].correct_answer === quizStorage[value].user_answer
+      ) {
+        componentQuizSelected.push(
+          <QuestionContainer key={value} sx={{ border: "solid 3px #13ca414e" }}>
+            <p>{quizStorage[value].question}</p>
+            <AnswersGrid>
+              <CorrectAnswer sx={{ border: "1px solid #00000075" }}>
+                {quizStorage[value].correct_answer}
+              </CorrectAnswer>
+            </AnswersGrid>
+          </QuestionContainer>
+        );
+      } else {
+        componentQuizSelected.push(
+          <QuestionContainer key={value} sx={{ border: "solid 3px #ca13224e" }}>
+            <p>{quizStorage[value].question}</p>
+            <AnswersGrid>
+              <CorrectAnswer>{quizStorage[value].correct_answer}</CorrectAnswer>
+              <WrongAnswer sx={{ border: "1px solid #00000075" }}>
+                {quizStorage[value].user_answer}
+              </WrongAnswer>
+            </AnswersGrid>
+          </QuestionContainer>
+        );
+      }
+    }
+    setStorageQuizSelected(componentQuizSelected);
+    setShow(true);
+  }
+
   function renderListOfQuizzes() {
     let list = [];
     for (let value in listOfDatesOfQuizzes) {
       list.push(
         <MenuItem
+          key={value}
           onClick={() => {
-            alert("test");
-          }}
-          value=''>
+            showQuizSelected(listOfDatesOfQuizzes[value]);
+          }}>
           <p>{listOfDatesOfQuizzes[value]}</p>
         </MenuItem>
       );
     }
+    return list;
   }
 
   const QuestionsValueSchema = Yup.object().shape({
@@ -57,7 +107,9 @@ export default function Home() {
             renderValue={() => {
               return <em>Quiz Finalizados: 0</em>;
             }}>
-            {}
+            {listOfDatesOfQuizzes[0] !== undefined
+              ? renderListOfQuizzes()
+              : null}
           </SelectStyle>
         ) : null}
       </HeaderStyled>
@@ -83,6 +135,7 @@ export default function Home() {
             )}
           </Formik>
         </div>
+        {show ? storageQuizSelected : null}
       </Main>
       <Modal hideBackdrop open={open} onClose={handleClose}>
         <BoxStyle>

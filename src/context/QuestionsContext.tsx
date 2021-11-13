@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useState,
-} from "react";
+import React, { createContext, ReactNode, useState } from "react";
 
 type Questions = {
   category: string;
@@ -19,18 +13,13 @@ type CorrectQuestionAndAnswer = {
   question: string;
   answer: string;
 };
-type UserQuestionAndAnswer = {
-  question: string;
-  answer: string;
-};
 
 type QuestionsContextType = {
   questions: Questions[];
   correctQuestionAndAnswer: CorrectQuestionAndAnswer[];
-  userQuestionAndAnswer: UserQuestionAndAnswer[];
-  setUserQuestionAndAnswer: Dispatch<SetStateAction<UserQuestionAndAnswer[]>>;
   getQuestions: (quantity: string) => void;
 };
+
 type QuestionsContextProviderProps = {
   children: ReactNode;
 };
@@ -42,9 +31,6 @@ export function QuestionsContextProvider(props: QuestionsContextProviderProps) {
   const [questions, setQuestions] = useState<Questions[]>([]);
   const [correctQuestionAndAnswer, setCorrectQuestionAndAnswer] = useState<
     CorrectQuestionAndAnswer[]
-  >([]);
-  const [userQuestionAndAnswer, setUserQuestionAndAnswer] = useState<
-    UserQuestionAndAnswer[]
   >([]);
 
   async function getQuestions(quantity: string) {
@@ -69,8 +55,6 @@ export function QuestionsContextProvider(props: QuestionsContextProviderProps) {
     <QuestionsContext.Provider
       value={{
         questions,
-        userQuestionAndAnswer,
-        setUserQuestionAndAnswer,
         correctQuestionAndAnswer,
         getQuestions,
       }}>
