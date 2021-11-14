@@ -1,4 +1,4 @@
-import { Select } from "@material-ui/core";
+import { Button, Select } from "@material-ui/core";
 import { styled } from "@material-ui/system";
 import { Box } from "@mui/system";
 
@@ -10,14 +10,14 @@ export const ContextContainer = styled("div")`
 export const HeaderStyled = styled("header")`
   padding: 0 20px;
   height: 60px;
-  background: #292929;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
+`;
+export const SelectStyle = styled(Select)`
   color: #fff;
-  h1: {
-    margin: 0 auto;
-  }
+  background: #544e61;
+  width: 190px;
 `;
 
 export const BoxStyle = styled(Box)`
@@ -40,13 +40,6 @@ export const BoxStyle = styled(Box)`
   }
 `;
 
-export const SelectStyle = styled(Select)`
-  color: #fff;
-  width: 190px;
-  position: absolute;
-  right: 0px;
-`;
-
 export const Main = styled("main")`
   display: flex;
   flex-direction: column;
@@ -54,17 +47,20 @@ export const Main = styled("main")`
   align-items: center;
   padding: 50px;
   h2 {
-    margin: 100px 0 80px 0;
-    font-size: 30px;
+    margin: 100px 0 50px 0;
+    font-size: 28px;
+    text-align: center;
   }
   .c-input-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    p {
-      font-size: 24px;
+    .c-text-Input {
+      background: #544e61;
+      width: 210px;
+      height: 30px;
+      border: none;
     }
   }
+`;
+
+export const SubmitButton = styled(Button)`
+  background: #544e61;
 `;

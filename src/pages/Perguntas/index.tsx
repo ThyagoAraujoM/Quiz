@@ -31,6 +31,37 @@ export default function Perguntas() {
     getQuestions(params.quantity);
   }, []);
 
+  function transformQuestions(): any {
+    const x = [];
+    x.push(
+      questions.map((value: any, index: number) => {
+        return (
+          <QuestionBox key={index}>
+            <div className='c-question-header'>
+              <p>Category: {value.category}</p>
+              <p>Difficulty: {value.difficulty}</p>
+            </div>
+
+            <p>
+              Question: <br /> {value.question}
+            </p>
+
+            <div className='c-answer-box'>
+              <h4>Answers</h4>
+              <div>
+                {value.type === "boolean"
+                  ? createBooleanQuestions(value, index)
+                  : createMultipleQuestions(value, index)}
+              </div>
+            </div>
+          </QuestionBox>
+        );
+      })
+    );
+
+    return x;
+  }
+
   function createMultipleQuestions(prop: Question, index: number) {
     const answer = [];
 
@@ -89,37 +120,6 @@ export default function Perguntas() {
         </div>
       </div>
     );
-  }
-
-  function transformQuestions(): any {
-    const x = [];
-    x.push(
-      questions.map((value: any, index: number) => {
-        return (
-          <QuestionBox key={index}>
-            <div className='c-question-header'>
-              <p>Category: {value.category}</p>
-              <p>Difficulty: {value.difficulty}</p>
-            </div>
-
-            <p>
-              Question: <br /> {value.question}
-            </p>
-
-            <div className='c-answer-box'>
-              <h4>Answers</h4>
-              <div>
-                {value.type === "boolean"
-                  ? createBooleanQuestions(value, index)
-                  : createMultipleQuestions(value, index)}
-              </div>
-            </div>
-          </QuestionBox>
-        );
-      })
-    );
-
-    return x;
   }
 
   function processRedirect() {

@@ -13,7 +13,6 @@ import {
 
 export default function Resultado() {
   const [show, setShow] = useState(false);
-
   const result: JSX.Element[] = [];
 
   type CurrentQuiz = {
@@ -23,8 +22,8 @@ export default function Resultado() {
   };
 
   let currentQuiz: CurrentQuiz[] = [];
-  let value: any = localStorage.getItem("currentQuiz");
-  currentQuiz = JSON.parse(value);
+  let storageCurrentQuiz: any = localStorage.getItem("currentQuiz");
+  currentQuiz = JSON.parse(storageCurrentQuiz);
 
   function renderCorrectAndWorkQuestions() {
     let corrects = 0;
@@ -87,14 +86,7 @@ export default function Resultado() {
   }
 
   function saveCurrentQuiz() {
-    let data = [];
-    for (let value in currentQuiz) {
-      data.push({
-        question: currentQuiz[value].question,
-        correct_answer: currentQuiz[value].correct_answer,
-        user_answer: currentQuiz[value].user_answer,
-      });
-    }
+    let data = currentQuiz;
 
     let listOfDatesOfQuizzes: [] | any =
       localStorage.getItem("listOfDatesOfQuizzes") != null
@@ -105,7 +97,6 @@ export default function Resultado() {
       listOfDatesOfQuizzes = JSON.parse(listOfDatesOfQuizzes);
     }
 
-    console.log(listOfDatesOfQuizzes);
     let date = new Date();
     let ActualDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
 

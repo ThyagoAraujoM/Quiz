@@ -18,31 +18,40 @@ import {
 } from "./styles";
 
 export default function Home() {
-  const [open, setOpen] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [showSelectedQuiz, setShowSelectedQuiz] = useState(false);
   const [quantityOfQuestions, setQuantityOfQuestions] = useState("");
-  const [show, setShow] = useState(false);
   const [storageQuizSelected, setStorageQuizSelected] = useState<any[]>([]);
+
   let listOfDatesOfQuizzes: [] | any =
     localStorage.getItem("listOfDatesOfQuizzes") != null
       ? localStorage.getItem("listOfDatesOfQuizzes")
       : [];
-
   if (listOfDatesOfQuizzes[0] != null) {
     listOfDatesOfQuizzes = JSON.parse(listOfDatesOfQuizzes);
   }
 
-  const handleOpen = (value: any) => {
-    setQuantityOfQuestions(`${value.perguntas}`);
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  function renderListOfQuizzes() {
+    let list = [];
+    for (let value in listOfDatesOfQuizzes) {
+      list.push(
+        <MenuItem
+          key={value}
+          onClick={() => {
+            renderSelectedQuiz(listOfDatesOfQuizzes[value]);
+          }}>
+          <p>{listOfDatesOfQuizzes[value]}</p>
+        </MenuItem>
+      );
+    }
+    return list;
+  }
 
-  function showQuizSelected(quizSelected: string) {
+  function renderSelectedQuiz(quizSelected: string) {
     let quizStorage: any = localStorage.getItem(quizSelected);
     quizStorage = JSON.parse(quizStorage);
     const componentQuizSelected: any[] = [];
+
     for (let value in quizStorage) {
       if (
         quizStorage[value].correct_answer === quizStorage[value].user_answer
@@ -72,24 +81,16 @@ export default function Home() {
       }
     }
     setStorageQuizSelected(componentQuizSelected);
-    setShow(true);
+    setShowSelectedQuiz(true);
   }
 
-  function renderListOfQuizzes() {
-    let list = [];
-    for (let value in listOfDatesOfQuizzes) {
-      list.push(
-        <MenuItem
-          key={value}
-          onClick={() => {
-            showQuizSelected(listOfDatesOfQuizzes[value]);
-          }}>
-          <p>{listOfDatesOfQuizzes[value]}</p>
-        </MenuItem>
-      );
-    }
-    return list;
-  }
+  const handleOpen = (value: any) => {
+    setQuantityOfQuestions(`${value.perguntas}`);
+    setOpenModal(true);
+  };
+  const handleClose = () => {
+    setOpenModal(false);
+  };
 
   const QuestionsValueSchema = Yup.object().shape({
     perguntas: Yup.number()
@@ -100,24 +101,24 @@ export default function Home() {
   return (
     <ContextContainer>
       <HeaderStyled sx={{ position: "relative" }}>
-        <h1>Quiz</h1>
-        {listOfDatesOfQuizzes ? (
+        {listOfDatesOfQuizzes[0] !== undefined ? (
           <SelectStyle
             displayEmpty
             renderValue={() => {
-              return <em>Quiz Finalizados: 0</em>;
+              return (
+                <em>Quiz Finalizados: {listOfDatesOfQuizzes.length + 1}</em>
+              );
             }}>
-            {listOfDatesOfQuizzes[0] !== undefined
-              ? renderListOfQuizzes()
-              : null}
+            {renderListOfQuizzes()}
           </SelectStyle>
         ) : null}
       </HeaderStyled>
       <Main>
-        <h2>Teste seu conhecimento com perguntas de diferentes temas</h2>
+        <h2>
+          How about testing your knowledge? <br /> Get started now,
+          <br /> choose how many questions you want to ask{" "}
+        </h2>
         <div className='c-input-container'>
-          <p>Digite o número de perguntas que deseja responder</p>
-
           <Formik
             initialValues={{
               perguntas: "",
@@ -126,7 +127,11 @@ export default function Home() {
             onSubmit={handleOpen}>
             {({ errors, touched }) => (
               <Form>
-                <Field name='perguntas' type='number' />
+                <Field
+                  className='c-text-Input'
+                  name='perguntas'
+                  type='number'
+                />
                 {errors.perguntas && touched.perguntas ? (
                   <div>{errors.perguntas}</div>
                 ) : null}
@@ -135,9 +140,9 @@ export default function Home() {
             )}
           </Formik>
         </div>
-        {show ? storageQuizSelected : null}
+        {showSelectedQuiz ? storageQuizSelected : null}
       </Main>
-      <Modal hideBackdrop open={open} onClose={handleClose}>
+      <Modal hideBackdrop open={openModal} onClose={handleClose}>
         <BoxStyle>
           <h2 id='child-modal-title'>Deseja Iniciar as perguntas ?</h2>
           <p id='child-modal-description'>
