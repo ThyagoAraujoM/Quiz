@@ -1,9 +1,16 @@
 import { Button, Container } from "@material-ui/core";
+import { off } from "process";
 import { useEffect, useState } from "react";
 import { Link, Redirect, useParams } from "react-router-dom";
 import { useQuestions } from "../../hooks/useQuestions";
-import { HeaderStyled } from "../Home/styles";
-import { QuestionBox } from "./styles";
+import { HeaderStyled, ReturnButton } from "../../styles/geral";
+import {
+  Answer,
+  EndQuizButton,
+  Error,
+  QuestionBox,
+  QuestionsContainer,
+} from "./styles";
 
 type Question = {
   incorrect_answers: [""];
@@ -63,63 +70,102 @@ export default function Perguntas() {
   }
 
   function createMultipleQuestions(prop: Question, index: number) {
-    const answer = [];
+    let answer = [];
 
     answer.push(
-      <div
+      <Answer
         key={"correct"}
         onClick={() => {
           userAnswers[index] = {
             answer: prop.correct_answer,
           };
-        }}>
+          document
+            .querySelector(`.c-answer-0-${index}`)
+            ?.classList.add("selected");
+
+          document
+            .querySelector(`.c-answer-1-${index}`)
+            ?.classList.remove("selected");
+          document
+            .querySelector(`.c-answer-2-${index}`)
+            ?.classList.remove("selected");
+          document
+            .querySelector(`.c-answer-3-${index}`)
+            ?.classList.remove("selected");
+        }}
+        className={`c-answer-0-${index}`}>
         {prop.correct_answer}
-      </div>
-    );
-    answer.push(
-      prop.incorrect_answers.map((value, key) => {
-        return (
-          <div
-            key={key}
-            onClick={() => {
-              userAnswers[index] = {
-                answer: value,
-              };
-            }}>
-            {value}
-          </div>
-        );
-      })
+      </Answer>
     );
 
+    prop.incorrect_answers.map((value, key) => {
+      answer.push(
+        <Answer
+          key={key}
+          onClick={() => {
+            userAnswers[index] = {
+              answer: value,
+            };
+
+            for (let i = 0; i <= 3; i++) {
+              document
+                .querySelector(`.c-answer-${i}-${index}`)
+                ?.classList.remove("selected");
+            }
+            document
+              .querySelector(`.c-answer-${key + 1}-${index}`)
+              ?.classList.add("selected");
+          }}
+          className={`c-answer-${key + 1}-${index}`}>
+          {value}
+        </Answer>
+      );
+    });
+
+    answer.sort(function (a, b) {
+      return 0.5 - Math.random();
+    });
+    console.log(answer);
     return answer;
   }
 
   function createBooleanQuestions(prop: Question, index: number) {
-    return (
-      <div>
-        <div>
-          <p
-            onClick={() => {
-              userAnswers[index] = {
-                answer: "True",
-              };
-            }}>
-            True
-          </p>
-        </div>
-        <div>
-          <p
-            onClick={() => {
-              userAnswers[index] = {
-                answer: "False",
-              };
-            }}>
-            False
-          </p>
-        </div>
-      </div>
+    let answer = [];
+    answer.push(
+      <Answer
+        onClick={() => {
+          userAnswers[index] = {
+            answer: "True",
+          };
+          document
+            .querySelector(`.c-answer-true-${index}`)
+            ?.classList.add("selected");
+          document
+            .querySelector(`.c-answer-false-${index}`)
+            ?.classList.remove("selected");
+        }}
+        className={`c-answer-true-${index}`}>
+        True
+      </Answer>
     );
+    answer.push(
+      <Answer
+        onClick={() => {
+          userAnswers[index] = {
+            answer: "False",
+          };
+          document
+            .querySelector(`.c-answer-true-${index}`)
+            ?.classList.remove("selected");
+          document
+            .querySelector(`.c-answer-false-${index}`)
+            ?.classList.add("selected");
+        }}
+        className={`c-answer-false-${index}`}>
+        False
+      </Answer>
+    );
+    return answer;
   }
 
   function processRedirect() {
@@ -138,16 +184,19 @@ export default function Perguntas() {
   }
 
   return (
-    <div>
+    <Container>
       <HeaderStyled>
-        <Button>
-          <Link to='/'>Voltar</Link>
-        </Button>
+        <ReturnButton>
+          <Link className={"c-link"} to='/'>
+            Voltar
+          </Link>
+        </ReturnButton>
         <h1>Perguntas</h1>
       </HeaderStyled>
-      <Container sx={{ background: "#f9f9f9", border: "1px solid #000" }}>
+      <QuestionsContainer>
         {questions ? transformQuestions() : null}
-        <Button
+        {error ? <Error>Preencha todos os dados</Error> : null}
+        <EndQuizButton
           onClick={() => {
             if (correctQuestionAndAnswer.length === userAnswers.length) {
               processRedirect();
@@ -156,10 +205,9 @@ export default function Perguntas() {
             }
           }}>
           Finalizar
-        </Button>
-        {error ? <div>Preencha todos os dados</div> : null}
-      </Container>
+        </EndQuizButton>
+      </QuestionsContainer>
       {redirect ? <Redirect push to='/resultado' /> : null}
-    </div>
+    </Container>
   );
 }

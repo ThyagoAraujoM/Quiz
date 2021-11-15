@@ -1,23 +1,79 @@
-import { Button, Select } from "@material-ui/core";
+import { Button, MenuItem, Select } from "@material-ui/core";
 import { styled } from "@material-ui/system";
 import { Box } from "@mui/system";
 
-export const ContextContainer = styled("div")`
-  display: grid;
-  height: 100vh;
-  grid-auto-rows: 50px 1fr;
-`;
 export const HeaderStyled = styled("header")`
   padding: 0 20px;
   height: 60px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  .c-header-select {
+    background: ${(props) => props.theme.palette.primary.main};
+    width: 190px;
+    padding: 0px;
+  }
 `;
-export const SelectStyle = styled(Select)`
+
+export const StyledMenuItem = styled(MenuItem)`
+  height: 30px;
+  p {
+    color: ${(props) => props.theme.palette.primary.main};
+  }
+`;
+
+export const Main = styled("main")`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  h2 {
+    margin: 100px 0 50px 0;
+    font-size: 28px;
+    text-align: center;
+  }
+  .c-form {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+
+    .c-text-Input {
+      background: #544e61;
+      width: 150px;
+      height: 36px;
+      border: none;
+      border-radius: 0.5em;
+    }
+
+    .c-error {
+      position: absolute;
+      bottom: -25px;
+      left: 5px;
+    }
+  }
+`;
+
+export const StyledButton = styled(Button)`
+  background: ${(props) => props.theme.palette.primary.main};
   color: #fff;
-  background: #544e61;
-  width: 190px;
+  border: 1px ${(props) => props.theme.palette.primary.main} solid;
+  &:hover {
+    background: #fff;
+    color: ${(props) => props.theme.palette.primary.main};
+  }
+`;
+
+export const QuestionsContainer = styled("div")`
+  margin-top: 0px;
+  background: ${(props) => props.theme.palette.primary.main};
+`;
+
+export const QuestionContainer = styled("div")`
+  padding: 20px;
+  border: solid 1px #fff;
+  color: #fff;
 `;
 
 export const BoxStyle = styled(Box)`
@@ -26,10 +82,9 @@ export const BoxStyle = styled(Box)`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 400px;
-  background-color: #141412;
-  border: 2px solid #080808;
-  box-shadow: 24;
-  padding: 2px 4px 3px;
+  background-color: ${(props) => props.theme.palette.primary.main};
+  border: 2px solid #0808085e;
+  padding: 15px;
   color: #fff;
 
   .c-buttons-modal {
@@ -40,27 +95,34 @@ export const BoxStyle = styled(Box)`
   }
 `;
 
-export const Main = styled("main")`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 50px;
-  h2 {
-    margin: 100px 0 50px 0;
-    font-size: 28px;
-    text-align: center;
+export const ModalButton = styled(StyledButton)`
+  background: #fff;
+  color: ${(props) => props.theme.palette.primary.main};
+  border: 1px ${(props) => props.theme.palette.primary.main} solid;
+
+  &:hover {
+    background: ${(props) => props.theme.palette.primary.main};
+    color: #fff;
+    border: 1px #fff solid;
   }
-  .c-input-container {
-    .c-text-Input {
-      background: #544e61;
-      width: 210px;
-      height: 30px;
-      border: none;
+
+  .c-link {
+    text-decoration: none;
+    color: ${(props) => props.theme.palette.primary.main};
+
+    &:hover {
+      color: #fff;
     }
   }
 `;
 
-export const SubmitButton = styled(Button)`
-  background: #544e61;
+export const ShowSelectedQuizButton = styled(Button)`
+  margin-top: 40px;
+  background: ${(props) => props.theme.palette.primary.main};
+  color: #fff;
+  border: 1px solid ${(props) => props.theme.palette.primary.main};
+  &:hover {
+    color: ${(props) => props.theme.palette.primary.main};
+    background: #fff;
+  }
 `;

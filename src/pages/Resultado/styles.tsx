@@ -41,15 +41,53 @@ export const ScoreContainer = styled("div")`
   }
 `;
 
-export const QuestionContainer = styled("div")`
+export const ButtonContainer = styled("div")`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 100px;
+  margin: 0 0 20px 0;
+
+  Button {
+    background: ${(props) => props.theme.palette.secondary.main};
+    border: 1px solid ${(props) => props.theme.palette.secondary.main};
+    &:hover {
+      color: ${(props) => props.theme.palette.secondary.main};
+      background: #fff;
+    }
+  }
+`;
+
+export const QuestionsBox = styled("div")`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 900px;
+  margin: 0 auto 50px auto;
+`;
+
+export const QuestionBox = styled("div")`
+  width: 100%;
   padding: 20px;
-  background: #7e7c7ca7;
+  background: ${(props) => props.theme.palette.primary.main};
+  color: #fff;
+
+  &.c-wrong-answer {
+    border: solid 5px #ca13224e;
+  }
+
+  &.c-correct-answer {
+    border: solid 5px #13ca414e;
+  }
 `;
 
 export const AnswersGrid = styled("div")`
   display: flex;
   justify-content: space-around;
   align-items: center;
+  color: #fff;
 `;
 
 export const Answer = styled("p")`
@@ -59,16 +97,9 @@ export const Answer = styled("p")`
 `;
 
 export const CorrectAnswer = styled(Answer)`
-  background: #13ca414e;
+  background: #13ca41a6;
 `;
 
 export const WrongAnswer = styled(Answer)`
-  background: #ca13224e;
-`;
-
-export const ButtonContainer = styled("div")`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 100px;
+  background: #ca1322b5;
 `;

@@ -1,12 +1,14 @@
 import { Button, Container } from "@material-ui/core";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { HeaderStyled } from "../Home/styles";
+import { HeaderStyled, ReturnButton } from "../../styles/geral";
+
 import {
   AnswersGrid,
   ButtonContainer,
   CorrectAnswer,
-  QuestionContainer,
+  QuestionBox,
+  QuestionsBox,
   ScoreContainer,
   WrongAnswer,
 } from "./styles";
@@ -59,26 +61,26 @@ export default function Resultado() {
         currentQuiz[value].correct_answer === currentQuiz[value].user_answer
       ) {
         result.push(
-          <QuestionContainer key={value} sx={{ border: "solid 3px #13ca414e" }}>
+          <QuestionBox key={value} className={"c-correct-answer"}>
             <p>{currentQuiz[value].question}</p>
             <AnswersGrid>
-              <CorrectAnswer sx={{ border: "1px solid #00000075" }}>
+              <CorrectAnswer sx={{ border: "2px solid #000000b5" }}>
                 {currentQuiz[value].correct_answer}
               </CorrectAnswer>
             </AnswersGrid>
-          </QuestionContainer>
+          </QuestionBox>
         );
       } else {
         result.push(
-          <QuestionContainer key={value} sx={{ border: "solid 3px #ca13224e" }}>
+          <QuestionBox key={value} className={"c-wrong-answer"}>
             <p>{currentQuiz[value].question}</p>
             <AnswersGrid>
               <CorrectAnswer>{currentQuiz[value].correct_answer}</CorrectAnswer>
-              <WrongAnswer sx={{ border: "1px solid #00000075" }}>
+              <WrongAnswer sx={{ border: "2px solid #000000b5" }}>
                 {currentQuiz[value].user_answer}
               </WrongAnswer>
             </AnswersGrid>
-          </QuestionContainer>
+          </QuestionBox>
         );
       }
     }
@@ -118,7 +120,11 @@ export default function Resultado() {
   return (
     <Container>
       <HeaderStyled>
-        <Link to='/'>Home</Link>
+        <ReturnButton>
+          <Link className={"c-link"} to='/'>
+            Home
+          </Link>
+        </ReturnButton>
         <h1>Resultado</h1>
       </HeaderStyled>
       <div>
@@ -139,7 +145,7 @@ export default function Resultado() {
             Salvar Quiz
           </Button>
         </ButtonContainer>
-        <div>{show ? <div>{showResult()}</div> : null}</div>
+        <QuestionsBox>{show ? showResult() : null}</QuestionsBox>
       </div>
     </Container>
   );

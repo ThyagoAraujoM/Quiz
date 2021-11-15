@@ -1,20 +1,25 @@
-import { Button, MenuItem, Modal } from "@material-ui/core";
+import { Button, MenuItem, Modal, Select } from "@material-ui/core";
 import { Field, Form, Formik } from "formik";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
+import { ContextContainer } from "../../styles/geral";
 import {
   AnswersGrid,
   CorrectAnswer,
-  QuestionContainer,
+  ScoreContainer,
   WrongAnswer,
 } from "../Resultado/styles";
 import {
-  BoxStyle,
-  ContextContainer,
   HeaderStyled,
+  BoxStyle,
   Main,
-  SelectStyle,
+  QuestionsContainer,
+  QuestionContainer,
+  StyledMenuItem,
+  StyledButton,
+  ModalButton,
+  ShowSelectedQuizButton,
 } from "./styles";
 
 export default function Home() {
@@ -22,6 +27,13 @@ export default function Home() {
   const [showSelectedQuiz, setShowSelectedQuiz] = useState(false);
   const [quantityOfQuestions, setQuantityOfQuestions] = useState("");
   const [storageQuizSelected, setStorageQuizSelected] = useState<any[]>([]);
+  const [numberOfWorngAndCorrects, setNumberOfWorngAndCorrects] = useState<{
+    correct: number;
+    wrong: number;
+  }>({ correct: 0, wrong: 0 });
+
+  const [showButtonOfSelectedQuiz, setShowButtonOfSelectedQuiz] =
+    useState(false);
 
   let listOfDatesOfQuizzes: [] | any =
     localStorage.getItem("listOfDatesOfQuizzes") != null
@@ -35,29 +47,33 @@ export default function Home() {
     let list = [];
     for (let value in listOfDatesOfQuizzes) {
       list.push(
-        <MenuItem
+        <StyledMenuItem
           key={value}
           onClick={() => {
-            renderSelectedQuiz(listOfDatesOfQuizzes[value]);
+            selectQuiz(listOfDatesOfQuizzes[value]);
           }}>
           <p>{listOfDatesOfQuizzes[value]}</p>
-        </MenuItem>
+        </StyledMenuItem>
       );
     }
     return list;
   }
 
-  function renderSelectedQuiz(quizSelected: string) {
+  function selectQuiz(quizSelected: string) {
     let quizStorage: any = localStorage.getItem(quizSelected);
     quizStorage = JSON.parse(quizStorage);
     const componentQuizSelected: any[] = [];
+
+    let wrong = 0,
+      correct = 0;
 
     for (let value in quizStorage) {
       if (
         quizStorage[value].correct_answer === quizStorage[value].user_answer
       ) {
+        correct++;
         componentQuizSelected.push(
-          <QuestionContainer key={value} sx={{ border: "solid 3px #13ca414e" }}>
+          <QuestionContainer key={value}>
             <p>{quizStorage[value].question}</p>
             <AnswersGrid>
               <CorrectAnswer sx={{ border: "1px solid #00000075" }}>
@@ -67,8 +83,9 @@ export default function Home() {
           </QuestionContainer>
         );
       } else {
+        wrong++;
         componentQuizSelected.push(
-          <QuestionContainer key={value} sx={{ border: "solid 3px #ca13224e" }}>
+          <QuestionContainer key={value}>
             <p>{quizStorage[value].question}</p>
             <AnswersGrid>
               <CorrectAnswer>{quizStorage[value].correct_answer}</CorrectAnswer>
@@ -80,9 +97,35 @@ export default function Home() {
         );
       }
     }
+    setNumberOfWorngAndCorrects({ correct, wrong });
     setStorageQuizSelected(componentQuizSelected);
-    setShowSelectedQuiz(true);
+    setShowButtonOfSelectedQuiz(true);
   }
+
+  function renderSelectedQuiz() {
+    return (
+      <>
+        <ScoreContainer>
+          <div className='c-score c-correct'>
+            <h3>{numberOfWorngAndCorrects.correct}</h3>
+            <h4>Acertos</h4>
+          </div>
+          <div className='c-score c-wrong'>
+            <h3>{numberOfWorngAndCorrects.wrong}</h3>
+            <h4>Erros</h4>
+          </div>
+        </ScoreContainer>
+        <QuestionsContainer> {storageQuizSelected} </QuestionsContainer>
+      </>
+    );
+  }
+
+  const QuestionsValueSchema = Yup.object().shape({
+    perguntas: Yup.number()
+      .min(1, "Too Short")
+      .max(50, "Too Long!")
+      .required("Required"),
+  });
 
   const handleOpen = (value: any) => {
     setQuantityOfQuestions(`${value.perguntas}`);
@@ -91,26 +134,20 @@ export default function Home() {
   const handleClose = () => {
     setOpenModal(false);
   };
-
-  const QuestionsValueSchema = Yup.object().shape({
-    perguntas: Yup.number()
-      .min(1, "Too Short")
-      .max(50, "Too Long!")
-      .required("Required"),
-  });
   return (
     <ContextContainer>
-      <HeaderStyled sx={{ position: "relative" }}>
+      <HeaderStyled>
         {listOfDatesOfQuizzes[0] !== undefined ? (
-          <SelectStyle
+          <Select
             displayEmpty
             renderValue={() => {
               return (
                 <em>Quiz Finalizados: {listOfDatesOfQuizzes.length + 1}</em>
               );
-            }}>
+            }}
+            className={"c-header-select"}>
             {renderListOfQuizzes()}
-          </SelectStyle>
+          </Select>
         ) : null}
       </HeaderStyled>
       <Main>
@@ -118,29 +155,35 @@ export default function Home() {
           How about testing your knowledge? <br /> Get started now,
           <br /> choose how many questions you want to ask{" "}
         </h2>
-        <div className='c-input-container'>
-          <Formik
-            initialValues={{
-              perguntas: "",
-            }}
-            validationSchema={QuestionsValueSchema}
-            onSubmit={handleOpen}>
-            {({ errors, touched }) => (
-              <Form>
-                <Field
-                  className='c-text-Input'
-                  name='perguntas'
-                  type='number'
-                />
-                {errors.perguntas && touched.perguntas ? (
-                  <div>{errors.perguntas}</div>
-                ) : null}
-                <Button type='submit'>Começar</Button>
-              </Form>
-            )}
-          </Formik>
-        </div>
-        {showSelectedQuiz ? storageQuizSelected : null}
+
+        <Formik
+          initialValues={{
+            perguntas: "",
+          }}
+          validationSchema={QuestionsValueSchema}
+          onSubmit={handleOpen}>
+          {({ errors, touched }) => (
+            <Form className={"c-form"}>
+              <Field className='c-text-Input' name='perguntas' type='number' />
+              {errors.perguntas && touched.perguntas ? (
+                <div className={"c-error"}>{errors.perguntas}</div>
+              ) : null}
+
+              <StyledButton type='submit'>Começar</StyledButton>
+            </Form>
+          )}
+        </Formik>
+
+        {showButtonOfSelectedQuiz ? (
+          <ShowSelectedQuizButton
+            onClick={() => {
+              setShowSelectedQuiz(!showSelectedQuiz);
+            }}>
+            Show Quiz
+          </ShowSelectedQuizButton>
+        ) : null}
+
+        {showSelectedQuiz ? renderSelectedQuiz() : null}
       </Main>
       <Modal hideBackdrop open={openModal} onClose={handleClose}>
         <BoxStyle>
@@ -150,10 +193,14 @@ export default function Home() {
             escolher outra quantidade.
           </p>
           <div className='c-buttons-modal'>
-            <Button onClick={handleClose}>Close</Button>
-            <Button>
-              <Link to={`/perguntas/${quantityOfQuestions}`}>Start</Link>
-            </Button>
+            <ModalButton onClick={handleClose}>Close</ModalButton>
+            <ModalButton>
+              <Link
+                className={"c-link"}
+                to={`/perguntas/${quantityOfQuestions}`}>
+                Start
+              </Link>
+            </ModalButton>
           </div>
         </BoxStyle>
       </Modal>
