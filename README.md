@@ -27,7 +27,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 Projeto simples com react e consumo de api. A aplicação é uma página de quiz, que o usuário escolhe quantas perguntas deseja responder, responde, verifica o resultado e decide se salva ou não elas para ver outra hora.
 
-Acesse o site aqui:
+Acesse o site aqui: <a target="_blank" href="https://quiz-9wv8xt827-thyagoaraujom.vercel.app">Quiz</a>
 
 <h2 id="--Contributing"> 🤝 Contribuindo </h2>
 

@@ -116,10 +116,10 @@ export default function Perguntas() {
                 ?.classList.remove("selected");
             }
             document
-              .querySelector(`.c-answer-${value + 1}-${index}`)
+              .querySelector(`.c-answer-${Number(value) + 1}-${index}`)
               ?.classList.add("selected");
           }}
-          className={`c-answer-${value + 1}-${index}`}>
+          className={`c-answer-${Number(value) + 1}-${index}`}>
           {prop.incorrect_answers[value]}
         </Answer>
       );
