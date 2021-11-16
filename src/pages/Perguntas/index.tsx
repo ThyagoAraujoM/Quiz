@@ -101,14 +101,13 @@ export default function Perguntas() {
         {parse(prop.correct_answer)}
       </Answer>
     );
-
-    prop.incorrect_answers.map((value, key) => {
+    for (let value in prop.incorrect_answers) {
       answer.push(
         <Answer
-          key={key}
+          key={value}
           onClick={() => {
             userAnswers[index] = {
-              answer: value,
+              answer: prop.incorrect_answers[value],
             };
 
             for (let i = 0; i <= 3; i++) {
@@ -117,15 +116,14 @@ export default function Perguntas() {
                 ?.classList.remove("selected");
             }
             document
-              .querySelector(`.c-answer-${key + 1}-${index}`)
+              .querySelector(`.c-answer-${value + 1}-${index}`)
               ?.classList.add("selected");
           }}
-          className={`c-answer-${key + 1}-${index}`}>
-          {value}
+          className={`c-answer-${value + 1}-${index}`}>
+          {prop.incorrect_answers[value]}
         </Answer>
       );
-    });
-
+    }
     answer.sort(function (a, b) {
       return 0.5 - Math.random();
     });
