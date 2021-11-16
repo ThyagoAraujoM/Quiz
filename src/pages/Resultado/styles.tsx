@@ -65,7 +65,8 @@ export const QuestionsBox = styled("div")`
   justify-content: center;
   gap: 20px;
   width: 900px;
-  margin: 0 auto 50px auto;
+  margin: 0 auto 0 auto;
+  padding: 0 0 40px 0;
 `;
 
 export const QuestionBox = styled("div")`

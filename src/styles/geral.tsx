@@ -19,9 +19,15 @@ export const HeaderStyled = styled("div")`
 
 export const ReturnButton = styled(Button)`
   background: ${(props) => props.theme.palette.primary.main};
-
+  border: 1px solid ${(props) => props.theme.palette.primary.main};
   .c-link {
     color: #fff;
     text-decoration: none;
+  }
+  &:hover {
+    .c-link {
+      color: ${(props) => props.theme.palette.primary.main};
+    }
+    background: #fff;
   }
 `;

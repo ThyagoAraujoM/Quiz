@@ -1,46 +1,59 @@
-# Getting Started with Create React App
+<h1 align="center">
+  Quiz
+</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <img src="https://img.shields.io/github/stars/thyagoaraujom/E-diaristas?label=stars&message=MIT&color=8257E5&labelColor=000000" alt="Stars">
+  <img  src="https://img.shields.io/static/v1?label=license&message=MIT&color=8257E5&labelColor=000000" alt="License">   
+</p>
 
-## Available Scripts
+<h1 align="center">
+    <img alt="Quiz" src="./github/quiz.gif" />
+</h1>
 
-In the project directory, you can run:
+<br>
 
-### `yarn start`
+## 🧪 Tecnologias
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Esse projeto foi desenvolvido com as seguintes tecnologias:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- [React](https://reactjs.org)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Formik](https://formik.org)
+- [Axios](https://axios-http.com)
+- [Material-UI](https://mui.com)
 
-### `yarn test`
+## 💻 Projeto
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Projeto simples com react e consumo de api. A aplicação é uma página de quiz, que o usuário escolhe quantas perguntas deseja responder, responde, verifica o resultado e decide se salva ou não elas para ver outra hora.
 
-### `yarn build`
+Acesse o site aqui:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<h2 id="--Contributing"> 🤝 Contribuindo </h2>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Este projeto é para fins de estudo, então me envie um e-mail me contando o que você está fazendo e por que está fazendo, me ensine o que você sabe.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Todos os tipos de contribuições são muito bem-vindos e apreciados!
 
-### `yarn eject`
+⭐️ Iniciar o projeto
+</br>
+🐛 Encontrar e relatar problemas
+</br>
+📥 Envie PRs para ajudar a resolver problemas ou adicionar recursos
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+---
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<h2 id="-autor">Autor</h2>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+<a href="https://github.com/thyagoaraujom">
+ <img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/51569984" width="100px;" alt=""/>
+</br>
+<p> Thyago Araujo <p>
+</a>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+[![Linkedin Badge](https://img.shields.io/badge/-ThyagoAraujo-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/thyago-araujo-m/)](https://www.linkedin.com/in/thyago-araujo-m/)
+[![Gmail Badge](https://img.shields.io/badge/-thyagoaraujomotta@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:thyagoaraujomotta@gmail.com)](mailto:thyagoaraujomotta@gmail.com)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Feito com ❤️ por Thyago Araujo 👋🏽 [Entre em contato!](https://www.linkedin.com/in/thyago-araujo-m/)

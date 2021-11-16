@@ -1,4 +1,4 @@
-import { Button, MenuItem, Select } from "@material-ui/core";
+import { Button, MenuItem } from "@material-ui/core";
 import { styled } from "@material-ui/system";
 import { Box } from "@mui/system";
 
@@ -10,7 +10,7 @@ export const HeaderStyled = styled("header")`
   align-items: center;
   .c-header-select {
     background: ${(props) => props.theme.palette.primary.main};
-    width: 190px;
+    width: 220px;
     padding: 0px;
   }
 `;

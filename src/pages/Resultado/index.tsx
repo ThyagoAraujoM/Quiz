@@ -1,7 +1,11 @@
-import { Button, Container } from "@material-ui/core";
-import React, { useState } from "react";
+import { Button } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { HeaderStyled, ReturnButton } from "../../styles/geral";
+import {
+  ContextContainer,
+  HeaderStyled,
+  ReturnButton,
+} from "../../styles/geral";
 
 import {
   AnswersGrid,
@@ -16,16 +20,17 @@ import {
 export default function Resultado() {
   const [show, setShow] = useState(false);
   const result: JSX.Element[] = [];
-
+  const [currentQuiz, setCurrentQuiz] = useState<CurrentQuiz[]>([]);
   type CurrentQuiz = {
     question: string;
     correct_answer: string;
     user_answer: string;
   };
 
-  let currentQuiz: CurrentQuiz[] = [];
-  let storageCurrentQuiz: any = localStorage.getItem("currentQuiz");
-  currentQuiz = JSON.parse(storageCurrentQuiz);
+  useEffect(() => {
+    let storageCurrentQuiz: any = localStorage.getItem("currentQuiz");
+    setCurrentQuiz(JSON.parse(storageCurrentQuiz));
+  }, []);
 
   function renderCorrectAndWorkQuestions() {
     let corrects = 0;
@@ -45,11 +50,11 @@ export default function Resultado() {
       <ScoreContainer>
         <div className='c-score c-correct'>
           <h3>{corrects}</h3>
-          <h4>Acertos</h4>
+          <h4>Correct</h4>
         </div>
         <div className='c-score c-wrong'>
           <h3>{wrongs}</h3>
-          <h4>Erros</h4>
+          <h4>Wrong</h4>
         </div>
       </ScoreContainer>
     );
@@ -118,14 +123,14 @@ export default function Resultado() {
   }
 
   return (
-    <Container>
+    <ContextContainer>
       <HeaderStyled>
         <ReturnButton>
           <Link className={"c-link"} to='/'>
             Home
           </Link>
         </ReturnButton>
-        <h1>Resultado</h1>
+        <h1>Result</h1>
       </HeaderStyled>
       <div>
         {renderCorrectAndWorkQuestions()}
@@ -135,18 +140,18 @@ export default function Resultado() {
             onClick={() => {
               setShow(!show);
             }}>
-            Mostrar Perguntas
+            Show Questions
           </Button>
           <Button
             variant='contained'
             onClick={() => {
               saveCurrentQuiz();
             }}>
-            Salvar Quiz
+            Save Quiz
           </Button>
         </ButtonContainer>
         <QuestionsBox>{show ? showResult() : null}</QuestionsBox>
       </div>
-    </Container>
+    </ContextContainer>
   );
 }

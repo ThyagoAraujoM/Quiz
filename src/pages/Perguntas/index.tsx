@@ -1,9 +1,12 @@
-import { Button, Container } from "@material-ui/core";
-import { off } from "process";
 import { useEffect, useState } from "react";
 import { Link, Redirect, useParams } from "react-router-dom";
 import { useQuestions } from "../../hooks/useQuestions";
-import { HeaderStyled, ReturnButton } from "../../styles/geral";
+import parse from "html-react-parser";
+import {
+  ContextContainer,
+  HeaderStyled,
+  ReturnButton,
+} from "../../styles/geral";
 import {
   Answer,
   EndQuizButton,
@@ -50,7 +53,8 @@ export default function Perguntas() {
             </div>
 
             <p>
-              Question: <br /> {value.question}
+              Question: <br />
+              {parse(`${value.question}`)}
             </p>
 
             <div className='c-answer-box'>
@@ -94,7 +98,7 @@ export default function Perguntas() {
             ?.classList.remove("selected");
         }}
         className={`c-answer-0-${index}`}>
-        {prop.correct_answer}
+        {parse(prop.correct_answer)}
       </Answer>
     );
 
@@ -125,7 +129,7 @@ export default function Perguntas() {
     answer.sort(function (a, b) {
       return 0.5 - Math.random();
     });
-    console.log(answer);
+
     return answer;
   }
 
@@ -170,32 +174,36 @@ export default function Perguntas() {
 
   function processRedirect() {
     let data = [];
-    for (let value in correctQuestionAndAnswer) {
-      data.push({
-        question: correctQuestionAndAnswer[value].question,
-        correct_answer: correctQuestionAndAnswer[value].answer,
-        user_answer: userAnswers[value].answer,
-      });
+    try {
+      for (let value in correctQuestionAndAnswer) {
+        data.push({
+          question: correctQuestionAndAnswer[value].question,
+          correct_answer: correctQuestionAndAnswer[value].answer,
+          user_answer: userAnswers[value].answer,
+        });
+      }
+      localStorage.setItem("currentQuiz", JSON.stringify(data));
+    } catch (error) {
+      console.log(error);
     }
-    localStorage.setItem("currentQuiz", JSON.stringify(data));
 
     setRedirect(true);
     setError(false);
   }
 
   return (
-    <Container>
+    <ContextContainer>
       <HeaderStyled>
         <ReturnButton>
           <Link className={"c-link"} to='/'>
-            Voltar
+            Return
           </Link>
         </ReturnButton>
-        <h1>Perguntas</h1>
+        <h1>Questions</h1>
       </HeaderStyled>
       <QuestionsContainer>
         {questions ? transformQuestions() : null}
-        {error ? <Error>Preencha todos os dados</Error> : null}
+        {error ? <Error>Fill in all data </Error> : null}
         <EndQuizButton
           onClick={() => {
             if (correctQuestionAndAnswer.length === userAnswers.length) {
@@ -204,10 +212,10 @@ export default function Perguntas() {
               setError(true);
             }
           }}>
-          Finalizar
+          Finish
         </EndQuizButton>
       </QuestionsContainer>
       {redirect ? <Redirect push to='/resultado' /> : null}
-    </Container>
+    </ContextContainer>
   );
 }

@@ -1,4 +1,4 @@
-import { Button, MenuItem, Modal, Select } from "@material-ui/core";
+import { Modal, Select } from "@material-ui/core";
 import { Field, Form, Formik } from "formik";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
@@ -141,9 +141,7 @@ export default function Home() {
           <Select
             displayEmpty
             renderValue={() => {
-              return (
-                <em>Quiz Finalizados: {listOfDatesOfQuizzes.length + 1}</em>
-              );
+              return <em>Completed quizzes: {listOfDatesOfQuizzes.length}</em>;
             }}
             className={"c-header-select"}>
             {renderListOfQuizzes()}
@@ -169,7 +167,7 @@ export default function Home() {
                 <div className={"c-error"}>{errors.perguntas}</div>
               ) : null}
 
-              <StyledButton type='submit'>Começar</StyledButton>
+              <StyledButton type='submit'>Start</StyledButton>
             </Form>
           )}
         </Formik>
@@ -187,10 +185,9 @@ export default function Home() {
       </Main>
       <Modal hideBackdrop open={openModal} onClose={handleClose}>
         <BoxStyle>
-          <h2 id='child-modal-title'>Deseja Iniciar as perguntas ?</h2>
+          <h2 id='child-modal-title'>Do you want to start ?</h2>
           <p id='child-modal-description'>
-            Clique iniciar para iniciar as perguntas, calcelar para voltar e
-            escolher outra quantidade.
+            Confirm to start questions, cancel to return.
           </p>
           <div className='c-buttons-modal'>
             <ModalButton onClick={handleClose}>Close</ModalButton>
